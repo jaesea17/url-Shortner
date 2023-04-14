@@ -5,21 +5,22 @@ const supertest = require("supertest");
 
 const { app } = require("../index")
 
-const tempDatabase = [];
-const urls = {}
-const { generateRandomString, baseUrl } = require('../index');
-
-let longUrl, code, shortUrl;
 
 
 describe("encode route", () => {
+    const tempDatabase = [];
+    const urls = {}
+    const { generateRandomString, baseUrl } = require('../index');
+
+    let code, shortUrl;
+    const longUrl = "https://indicina.co";
+
+
     describe("given the url is successfully shortend", () => {
         it("it should not find the url in tempDatabase", async () => {
-            await supertest(app).post('/encode', (req, res) => {
-                longUrl = req.body.url;
-                const data = tempDatabase.find(val => val.longUrl === longUrl);
-                expect(data).toBe(undefined);
-            })
+            const data = tempDatabase.find(val => val.longUrl === longUrl);
+            expect(data).toBeFalsy();
+
         })
         it("it should generate a shortUrl", () => {
             code = generateRandomString(6);
@@ -32,6 +33,9 @@ describe("encode route", () => {
         'longUrl', 'shortUrl', 'code', 'dateCreated' and 'timesVisited'`,
             () => {
                 const date = new Date()
+
+                console.log("code :", code);
+                console.log("shortUrl :", shortUrl);
 
                 urls["longUrl"] = longUrl;
                 urls["shortUrl"] = shortUrl;
@@ -47,14 +51,24 @@ describe("encode route", () => {
             })
         it("should push into tempDatabase", () => {
             tempDatabase.push(urls);
-            const lastest = tempDatabase.at(-1);
+            const latest = tempDatabase.at(-1);
 
-            expect(lastest.code).toBe(code);
+            expect(latest.code).toBe(code);
         })
         it("should return 201", async () => {
-            const { statusCode } = await supertest(app).post('/encode').send({ url: "https://indicina.co" });
+            const { statusCode } = await supertest(app).post('/encode').send({ "url": longUrl });
             expect(statusCode).toBe(201)
         })
 
+    })
+    describe("given the url entered has previously been shortened", () => {
+        it("it should be found in the tempDatabase", async () => {
+            const data = tempDatabase.find(val => val.longUrl === longUrl);
+            expect(data).toBeTruthy();
+        })
+        it("it should return statusCode 200", async () => {
+            const response = await supertest(app).post('/encode').send({ "url": longUrl })
+            expect(response.statusCode).toBe(200);
+        })
     })
 })
