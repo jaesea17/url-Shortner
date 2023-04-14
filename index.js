@@ -24,6 +24,7 @@ app.post('/encode', (req, res) => {
     if (data) {
         const shortUrl = data.shortUrl;
         res.status(200).json({ shortUrl });
+        return;
     }
 
     const code = generateRandomString(6);
@@ -36,11 +37,19 @@ app.post('/encode', (req, res) => {
     urls["date"] = new Date();
 
     tempDatabase.push(urls);
-    console.log("temp", tempDatabase)
     res.status(200).json({ shortUrl });
 
 })
 
+app.post('/decode', () => {
+    const shortUrl = req.body.url;
+    const longUrl = tempDatabase.find(val => val.shortUrl === shortUrl).longUrl;
+    res.json({ longUrl });
+})
+
+app.post('/statistic/:urlPath', () => {
+
+})
 
 function generateRandomString(length) {
     const characters = 'ab78cABCdefDEFghijklmnopGHI45JKLMN0123OPqrstuvwxyzQRST69UVWXYZ';
