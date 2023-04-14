@@ -1,4 +1,9 @@
-const express = require("express");
+const express = require('express');
+
+// const createServer = require('./utils/server');
+
+// const app = createServer();
+
 const app = express();
 
 app.use(express.json());
@@ -26,7 +31,7 @@ app.get('/:urlPath', (req, res) => {
 
 app.post('/encode', (req, res) => {
     const longUrl = req.body.url;
-    const data = tempDatabase.find(val => val.code === code);
+    const data = tempDatabase.find(val => val.longUrl === longUrl);
     if (data) {
         const shortUrl = data.shortUrl;
         res.status(200).json({ shortUrl });
@@ -44,7 +49,7 @@ app.post('/encode', (req, res) => {
     urls["timesVisited"] = 0;
 
     tempDatabase.push(urls);
-    res.status(200).json({ shortUrl });
+    res.status(201).json({ shortUrl });
 
 })
 
@@ -77,6 +82,8 @@ function generateRandomString(length) {
 }
 
 
-app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//     console.log(`listening on port ${PORT}`);
+// });
+
+module.exports = { app, generateRandomString, baseUrl }
