@@ -8,6 +8,16 @@ const PORT = 4000;
 const tempDatabase = [];
 const baseUrl = `http://localhost:${PORT}`;
 
+app.get('/:urlPath', (req, res) => {
+    const code = req.params.urlPath;
+    const data = tempDatabase.find(val => val.code === code);
+    if (data) {
+        res.redirect(data.longUrl)
+    } else {
+        res.status(404).json("url not found");
+    }
+})
+
 app.post('/encode', (req, res) => {
     const longUrl = req.body.url;
     const data = tempDatabase.find(val => val.code === code);
