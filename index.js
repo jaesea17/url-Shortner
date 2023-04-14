@@ -10,8 +10,14 @@ const baseUrl = `http://localhost:${PORT}`;
 
 app.get('/:urlPath', (req, res) => {
     const code = req.params.urlPath;
-    const data = tempDatabase.find(val => val.code === code);
+    let index;
+    const data = tempDatabase.find((val, i) => {
+        index = i;
+        return val.code === code;
+    });
     if (data) {
+        data.timesVisited += 1;
+        tempDatabase.splice(index, 1, data);
         res.redirect(data.longUrl)
     } else {
         res.status(404).json("url not found");
@@ -34,21 +40,31 @@ app.post('/encode', (req, res) => {
     urls["longUrl"] = longUrl;
     urls["shortUrl"] = shortUrl;
     urls["code"] = code;
-    urls["date"] = new Date();
+    urls["dateCreated"] = new Date();
+    urls["timesVisited"] = 0;
 
     tempDatabase.push(urls);
     res.status(200).json({ shortUrl });
 
 })
 
-app.post('/decode', () => {
+app.post('/decode', (req, res) => {
     const shortUrl = req.body.url;
     const longUrl = tempDatabase.find(val => val.shortUrl === shortUrl).longUrl;
-    res.json({ longUrl });
+    res.status(200).json({ longUrl });
 })
 
-app.post('/statistic/:urlPath', () => {
-
+app.get('/statistic/:urlPath', (req, res) => {
+    const code = req.params.urlPath;
+    const data = tempDatabase.find(val => val.code === code);
+    if (data) {
+        const dateCreated = data.dateCreated;
+        const timesVisited = data.timesVisited;
+        res.status(200).json({
+            dateCreated,
+            timesVisited
+        })
+    }
 })
 
 function generateRandomString(length) {
