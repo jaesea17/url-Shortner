@@ -27,13 +27,13 @@ $ yarn test
 
 ### API ENDPOINTS ROUTE
 
-- **POST** `http://localhost:4000/encode`
-Payload = {"url": "the long url"}
+- **POST** `http://localhost:4000/encode` 
+*payload = {"url": "the long url"}*
 
 - **POST** `http://localhost:4000/decode`
-Payload = {"url": "the shortened url"}
+*payload = {"url": "the shortened url"}*
 
 - **GET** `http://localhost:4000/statistic/:urlPath`
-Param = `${code}`
+*params = `${code}`*
 
 
