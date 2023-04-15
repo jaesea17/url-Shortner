@@ -1,12 +1,12 @@
 const express = require('express');
 
-const app = express();
+const { tempDatabase } = require('./utils/database');
+const { generateRandomString } = require('./utils/generateCode');
+const { PORT } = require('./utils/port');
 
+const app = express();
 app.use(express.json());
 
-const PORT = 4000;
-
-const tempDatabase = [];
 const baseUrl = `http://localhost:${PORT}`;
 
 app.get('/:urlPath', (req, res) => {
@@ -72,14 +72,6 @@ app.get('/statistic/:urlPath', (req, res) => {
     }
 })
 
-function generateRandomString(length) {
-    const characters = 'ab78cABCdefDEFghijklmnopGHI45JKLMN0123OPqrstuvwxyzQRST69UVWXYZ';
-    let result = '';
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
 
 
-module.exports = { app, generateRandomString, baseUrl, tempDatabase }
+module.exports = { app, generateRandomString, baseUrl }
