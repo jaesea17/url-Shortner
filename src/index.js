@@ -1,9 +1,5 @@
 const express = require('express');
 
-// const createServer = require('./utils/server');
-
-// const app = createServer();
-
 const app = express();
 
 app.use(express.json());
@@ -44,8 +40,8 @@ app.post('/encode', (req, res) => {
     const urls = {};
     urls["longUrl"] = longUrl;
     urls["shortUrl"] = shortUrl;
-    // urls["code"] = code;
-    // urls["dateCreated"] = new Date();
+    urls["code"] = code;
+    urls["dateCreated"] = new Date();
     urls["timesVisited"] = 0;
 
     tempDatabase.push(urls);
@@ -60,7 +56,7 @@ app.post('/decode', (req, res) => {
         res.status(200).json({ longUrl });
         return;
     }
-    res.status(404).json({ messag: "not found" })
+    res.status(404).json({ message: "not found" })
 })
 
 app.get('/statistic/:urlPath', (req, res) => {
@@ -86,4 +82,4 @@ function generateRandomString(length) {
 }
 
 
-module.exports = { app, generateRandomString, baseUrl }
+module.exports = { app, generateRandomString, baseUrl, tempDatabase }

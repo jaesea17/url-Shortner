@@ -1,7 +1,5 @@
 const supertest = require("supertest");
-const { baseUrl, code, generateRandomString } = require('../index');
-
-const { app } = require("../index")
+const { app, baseUrl, generateRandomString } = require('../index');
 
 describe("encode route", () => {
     describe("given the url is successfully shortend", () => {
@@ -20,8 +18,10 @@ describe("encode route", () => {
                 .send({ "url": "https://indicina.co" })
             expect(response.body.shortUrl).toContain(`${baseUrl}`)
         })
+        it("it shortUrl length should be 28", async () => {
+            const response = await supertest(app).post('/encode')
+                .send({ "url": "https://indicina.co" })
+            expect(response.body.shortUrl.length).toEqual(28);
+        })
     })
-    describe("given the url entered has previously been shortened", () => { })
 })
-
-// module.exports = { essentials }
