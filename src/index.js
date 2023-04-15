@@ -44,8 +44,8 @@ app.post('/encode', (req, res) => {
     const urls = {};
     urls["longUrl"] = longUrl;
     urls["shortUrl"] = shortUrl;
-    urls["code"] = code;
-    urls["dateCreated"] = new Date();
+    // urls["code"] = code;
+    // urls["dateCreated"] = new Date();
     urls["timesVisited"] = 0;
 
     tempDatabase.push(urls);
@@ -56,7 +56,11 @@ app.post('/encode', (req, res) => {
 app.post('/decode', (req, res) => {
     const shortUrl = req.body.url;
     const longUrl = tempDatabase.find(val => val.shortUrl === shortUrl).longUrl;
-    res.status(200).json({ longUrl });
+    if (longUrl) {
+        res.status(200).json({ longUrl });
+        return;
+    }
+    res.status(404).json({ messag: "not found" })
 })
 
 app.get('/statistic/:urlPath', (req, res) => {
@@ -81,9 +85,5 @@ function generateRandomString(length) {
     return result;
 }
 
-
-// app.listen(PORT, () => {
-//     console.log(`listening on port ${PORT}`);
-// });
 
 module.exports = { app, generateRandomString, baseUrl }
