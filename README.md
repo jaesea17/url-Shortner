@@ -4,7 +4,7 @@ A url shortner that helps shorten the length of really long urls
 ## Installation
 
 ```bash
-$ yarn add
+$ yarn
 ```
 
 ## Running the app
